@@ -1,0 +1,22 @@
+# Cloudflare pages requires a top level name attribute
+name = "remix-vite-pages-rpc"
+
+# Cloudflare Pages will ignore wrangler.toml without this line
+pages_build_output_dir = "./build/client"
+
+# Fixes "no such module 'node:events'"
+#compatibility_flags = ["nodejs_compat"]
+
+# Fixes "compatibility_flags cannot be specified without a compatibility_date"
+compatibility_date = "2024-04-18"
+
+services = [
+    { binding = "MY_SERVICE_A", service = "hello-worker-a" },
+    { binding = "MY_SERVICE_B", service = "hello-worker-b" },
+    { binding = "MY_RPC", service = "rpc-worker", entrypoint = "NamedEntrypoint" },
+]
+
+[vars]
+MY_VAR = "my-var-value"
+MY_VAR_A = "my-var-a"
+MY_JSON_VAR = { test = true }
