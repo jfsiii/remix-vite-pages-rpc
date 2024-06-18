@@ -1,8 +1,7 @@
 import { RpcTarget, WorkerEntrypoint } from "cloudflare:workers";
 
 export default {
-	async fetch(request: Request, env: Record<string, unknown>, ctx: unknown) {
-		console.log("rpc-worker fetch", { request, env, ctx })
+	async fetch() {
 		throw new Error(
 			"Worker only used for RPC calls, there's no default fetch handler"
 		);

@@ -2,14 +2,18 @@
 Example repo demonstrating using Workers RPC with Remix (vite) and the issues with explicit-resource-management
 
 ## Development
+Start the workers
+```sh
+npm run dev:workers
+```
 
 Run the dev server:
 
 ```sh
-npm run dev
+npm run dev:remix
 ```
 
-To run Wrangler:
+To run Wrangler (must have already run `npm run dev:workers`):
 
 ```sh
 npm run build
@@ -27,11 +31,6 @@ npm run typegen
 You will need to rerun typegen whenever you make changes to `wrangler.toml`.
 
 ## Deployment
-
-> [!WARNING]
-> Cloudflare does _not_ use `wrangler.toml` to configure deployment bindings.
-> You **MUST** [configure deployment bindings manually in the Cloudflare dashboard][bindings].
-
 First, build your app for production:
 
 ```sh
@@ -43,8 +42,6 @@ Then, deploy your app to Cloudflare Pages:
 ```sh
 npm run deploy
 ```
-
-[bindings]: https://developers.cloudflare.com/pages/functions/bindings/
 
 ## Styling
 
