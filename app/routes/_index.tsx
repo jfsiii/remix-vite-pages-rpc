@@ -18,7 +18,7 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
   const resultA = await MY_SERVICE_A.fetch("http://0.0.0.0");
 
   // see https://github.com/cloudflare/workers-sdk/blob/5d3d12f75769f022629ace3aa402941889551d5a/fixtures/get-platform-proxy/tests/get-platform-proxy.env.test.ts#L199-L205
-  const counter = await MY_RPC.getCounter();
+  using counter = await MY_RPC.getCounter();
   console.log(await counter.value); // 0
   console.log(await counter.increment(4)); // 4
   console.log(await counter.increment(8)); // 12
