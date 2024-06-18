@@ -18,6 +18,10 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
   const resultA = await MY_SERVICE_A.fetch("http://0.0.0.0");
 
   // see https://github.com/cloudflare/workers-sdk/blob/5d3d12f75769f022629ace3aa402941889551d5a/fixtures/get-platform-proxy/tests/get-platform-proxy.env.test.ts#L199-L205
+  // using `using counter` instead of `const counter` means
+  // 1) `npm run dev` (remix w/vite for dev server) will fail with "TypeError: Object not disposable"
+  // 2) `npm run build && npm run start` (remix/vite/rollup to build & wrangler for dev server) is required
+  // using counter = await MY_RPC.getCounter();
   const counter = await MY_RPC.getCounter();
   console.log(await counter.value); // 0
   console.log(await counter.increment(4)); // 4
@@ -25,6 +29,7 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
   console.log(await counter.value); // 12
 
   // see https://github.com/cloudflare/workers-sdk/blob/5d3d12f75769f022629ace3aa402941889551d5a/fixtures/get-platform-proxy/tests/get-platform-proxy.env.test.ts#L194-L198
+  // using jsonResp = await MY_RPC.asJsonResponse([1, 2, 3]);
   const jsonResp = await MY_RPC.asJsonResponse([1, 2, 3]);
 
 
