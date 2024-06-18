@@ -18,11 +18,33 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
   const resultA = await MY_SERVICE_A.fetch("http://0.0.0.0");
 
   // see https://github.com/cloudflare/workers-sdk/blob/5d3d12f75769f022629ace3aa402941889551d5a/fixtures/get-platform-proxy/tests/get-platform-proxy.env.test.ts#L199-L205
-  using counter = await MY_RPC.getCounter();
+  const counter = await MY_RPC.getCounter();
   console.log(await counter.value); // 0
   console.log(await counter.increment(4)); // 4
   console.log(await counter.increment(8)); // 12
   console.log(await counter.value); // 12
+
+  // see https://github.com/cloudflare/workers-sdk/blob/5d3d12f75769f022629ace3aa402941889551d5a/fixtures/get-platform-proxy/tests/get-platform-proxy.env.test.ts#L194-L198
+  const jsonResp = await MY_RPC.asJsonResponse([1, 2, 3]);
+
+
+  // see https://github.com/cloudflare/workers-sdk/blob/5d3d12f75769f022629ace3aa402941889551d5a/fixtures/get-platform-proxy/tests/get-platform-proxy.env.test.ts#L206-L223
+  // const helloWorldFn = await MY_RPC.getHelloWorldFn();
+  // const helloFn = await MY_RPC.getHelloFn();
+
+  // // Shows:
+  // // {
+  // //   helloWorldFn: ProxyStub { name: 'RpcStub', poisoned: false },
+  // //   helloFn: ProxyStub { name: 'RpcStub', poisoned: false }
+  // // }
+  // console.log({ helloWorldFn, helloFn })
+
+  // const helloWorldResult = helloWorldFn(); // TypeError: helloWorldFn is not a function
+  // const helloResult = helloFn("Sup", "world", {
+  //   capitalize: true,
+  //   suffix: "?!",
+  // })
+  // console.log({ helloWorldResult, helloResult })
   return json({
     extra: context.extra,
     env: {
@@ -33,13 +55,21 @@ export const loader = async ({ context }: LoaderFunctionArgs) => {
       MY_SERVICE_A: 'Cannot be serialized to JSON, but it is available in the context. See console.logs for more info.',
       MY_SERVICE_B: 'Cannot be serialized to JSON, but it is available in the context. See console.logs for more info.',
     },
-    lastCounter: await counter.value,
+    rpc: {
+      lastCounter: await counter.value,
+      jsonStatus: jsonResp.status,
+      jsonResponse: await jsonResp.text(),
+      sum: await MY_RPC.sum([1, 2, 3]),
+    },
     serviceA: await resultA.text(),
+
+    // helloWorldResult,
+    // helloResult,
   });
 };
 
 export default function Index() {
-  const {env, extra, lastCounter, serviceA} = useLoaderData<typeof loader>()
+  const {env, extra, rpc, serviceA} = useLoaderData<typeof loader>()
   return (
     <div className="font-sans p-4">
       <h1 className="text-3xl">Welcome to Remix on Cloudflare</h1>
@@ -77,7 +107,7 @@ export default function Index() {
       <pre className="mt-4 p-4 bg-gray-100 rounded-md">
         {JSON.stringify({
           serviceA,
-          rpcLastCounter: lastCounter,
+          rpc,
           }, null, 2)}
       </pre>
     </div>
